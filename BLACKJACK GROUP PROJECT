@@ -3,8 +3,13 @@
 clear
 clc
 
+%% Blackjack Intro Words
+disp('Hello players, welcome to Blackjack')
+
 %% Player input initialization
 % Need inputs, how many player and initial $
+numPlayers=input('Enter numbers of palyers:')
+
 % Need larger loop for how long to play
 % Initialize player variables
 
@@ -16,10 +21,24 @@ while(number of players>0 or players decide to end)
 
 % take initial bets
 
+%Shuffle deck
 playingDeck=shuffleDeck(myDeck);
 
 % create loop for dealing cards
 % display information in command window, needs to be for players and dealer
+% runs once for each player and gives each player an empty hand-NO CARDS YET
+for i=1:numPlayers
+  players(i).hand=[]
+
+
+% Dealing with first two cards
+for i=1:numPlayers
+  [player(i),deck]=dealCard(player(i),deck);
+  [player(i),deck]=dealCard(player(i),deck);
+% For two times because Blackjack starts with two cards
+% dealCard means
+player.Hand(i+1)=deck(i);
+deck(i)=[];
 
 % hit/stand logic, use functions from below
 
@@ -53,3 +72,4 @@ function updatedDealer=dealerLogic(dealerHand)
 % need logic here to determine if the dealer should hit or stand
 % while loop, dealer hand<17 dealer needs to hit
 end
+
