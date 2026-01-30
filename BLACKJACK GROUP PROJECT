@@ -17,19 +17,20 @@ numPlayers=input('Enter numbers of players:')
 myDeck=initDeck();
 
 %% Main loop
+deck=shuffleDeck(myDeck);
 while(number of players>0 or players decide to end)
 
 % take initial bets
 
 %Shuffle deck
-playingDeck=shuffleDeck(myDeck);
+function shuffledDeck=shuffleDeck(myDeck);
 
 % create loop for dealing cards
 % display information in command window, needs to be for players and dealer
 % runs once for each player and gives each player an empty hand-NO CARDS YET
 for i=1:numPlayers
-  players(i).hand=[]
-
+  players(i).hand=[];
+end
 
 % Dealing with first two cards
 for i=1:numPlayers
@@ -43,6 +44,11 @@ deck(i)=[];
 % hit/stand logic, use functions from below
 
 end
+
+for i=1:numPlayers
+  disp(['Player',num2str(i),'turn']);
+% logic check
+  players(i)=play(players(i),deck,i==1);
 
 %% my local functions
 function shuffledDeck=shuffleDeck(myDeck)
