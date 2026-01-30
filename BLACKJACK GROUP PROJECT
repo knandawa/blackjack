@@ -8,13 +8,13 @@ disp('Hello players, welcome to Blackjack')
 
 %% Player input initialization
 % Need inputs, how many player and initial $
-numPlayers=input('Enter numbers of palyers:')
+numPlayers=input('Enter numbers of players:')
 
 % Need larger loop for how long to play
 % Initialize player variables
 
 %% Game initialization
-myDeck=innitDeck();
+myDeck=initDeck();
 
 %% Main loop
 while(number of players>0 or players decide to end)
@@ -33,8 +33,8 @@ for i=1:numPlayers
 
 % Dealing with first two cards
 for i=1:numPlayers
-  [player(i),deck]=dealCard(player(i),deck);
-  [player(i),deck]=dealCard(player(i),deck);
+  [players(i),deck]=dealCard(players(i),deck);
+  [players(i),deck]=dealCard(players(i),deck);
 % For two times because Blackjack starts with two cards
 % dealCard means
 player.Hand(i+1)=deck(i);
@@ -50,7 +50,7 @@ function shuffledDeck=shuffleDeck(myDeck)
 %return shuffled Deck
 end
 
-function myDeck=innitDeck()
+function myDeck=initDeck()
 %create a loop for each suit
 % Should my deck be: array, tables, structures
 % Align card values, suits
