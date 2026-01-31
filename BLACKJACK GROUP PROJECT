@@ -14,7 +14,47 @@ numPlayers=input('Enter numbers of players:')
 % Initialize player variables
 
 %% Game initialization
-myDeck=initDeck();
+
+function myDeck = initDeck()
+  suits = {'Diamonds', 'Hearts', 'Spades', 'Clubs'};
+  ranks = {'2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'};
+  index = 1;
+  for suitCard = 1:length(suits)
+      for rankCard = 1:length(ranks)
+          myDeck(index).suitCard = suits{suitCard};
+          myDeck(index).rankCard = ranks{rankCard};
+          if rankCard <= 9
+              myDeck(index).cardValue = rankCard + 1;
+          elseif rankCard <= 12
+              myDeck(index).cardValue = 10;
+          else
+              myDeck(index).cardValue = 11;
+          end
+          index = index + 1;
+      end
+  end
+end
+
+function shuffleDeck = shuffleDeck(myDeck)
+  shuffleDeck = myDeck(randperm(length(myDeck)));
+end
+
+function [card, myDeck] = dealCard(myDeck)
+    card = myDeck(1);
+    myDeck(1) = [];
+end
+
+
+myDeck = initDeck();
+myDeck = shuffleDeck(myDeck);
+
+[playerCard, myDeck] = dealCard(myDeck);
+[dealerCard, myDeck] = dealCard(myDeck);
+
+disp(['Player got: ' playerCard.rankCard ' of ' playerCard.suitCard])
+disp(['Dealer got: ' dealerCard.rankCard ' of ' dealerCard.suitCard])
+
+
 
 %% Main loop
 deck=shuffleDeck(myDeck);
