@@ -4,11 +4,18 @@ clear
 clc
 
 %% Blackjack Intro Words
-disp('Hello players, welcome to Blackjack')
+disp('Hello! Welcome to Blackjack')
 
 %% Player input initialization
 % Need inputs, how many player and initial $
-numPlayers=input('Enter numbers of players:')
+
+numPlayers = input('How many players? ');
+for i = 1:numPlayers
+    players(i).NAME = input(['Enter name for Player ' num2str(i) ': '], 's');
+    players(i).HAND = [];
+end
+[players(1).HAND, myDeck] = dealCard(myDeck);
+
 
 % Need larger loop for how long to play
 % Initialize player variables
@@ -48,10 +55,10 @@ end
 myDeck = initDeck();
 myDeck = shuffleDeck(myDeck);
 
-[playerCard, myDeck] = dealCard(myDeck);
+[players(1).HAND, myDeck] = dealCard(myDeck);
 [dealerCard, myDeck] = dealCard(myDeck);
 
-disp(['Player got: ' playerCard.rankCard ' of ' playerCard.suitCard])
+disp([players(1).NAME ' got: ' players(1).HAND.rankCard ' of ' players(1).HAND.suitCard])
 disp(['Dealer got: ' dealerCard.rankCard ' of ' dealerCard.suitCard])
 
 
