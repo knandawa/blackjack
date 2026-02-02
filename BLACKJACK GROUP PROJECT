@@ -16,44 +16,25 @@ for i = 1:numPlayers
 end
 [players(1).HAND, myDeck] = dealCard(myDeck);
 
+%%Replay
+playAgain = 1;  
+
+while playAgain == 1
+     disp('Starting a new round!')
+
+    % Reset all player hands
+    for i = 1:numPlayers
+        players(i).HAND = [];
+    end
+    deal.HAND=[];
+
+myDeck = initDeck();
+myDeck = shuffleDeck(myDeck);
+
 
 % Need larger loop for how long to play
 % Initialize player variables
 
-%% Game initialization
-
-function myDeck = initDeck()
-  suits = {'Diamonds', 'Hearts', 'Spades', 'Clubs'};
-  ranks = {'2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'};
-  index = 1;
-  for suitCard = 1:length(suits)
-      for rankCard = 1:length(ranks)
-          myDeck(index).suitCard = suits{suitCard};
-          myDeck(index).rankCard = ranks{rankCard};
-          if rankCard <= 9
-              myDeck(index).cardValue = rankCard + 1;
-          elseif rankCard <= 12
-              myDeck(index).cardValue = 10;
-          else
-              myDeck(index).cardValue = 11;
-          end
-          index = index + 1;
-      end
-  end
-end
-
-function shuffleDeck = shuffleDeck(myDeck)
-  shuffleDeck = myDeck(randperm(length(myDeck)));
-end
-
-function [card, myDeck] = dealCard(myDeck)
-    card = myDeck(1);
-    myDeck(1) = [];
-end
-
-
-myDeck = initDeck();
-myDeck = shuffleDeck(myDeck);
 
 [players(1).HAND, myDeck] = dealCard(myDeck);
 [dealerCard, myDeck] = dealCard(myDeck);
@@ -87,9 +68,6 @@ for i=1:numPlayers
 % dealCard means
 player.Hand(i+1)=deck(i);
 deck(i)=[];
-
-% hit/stand logic, use functions from below
-
 end
 
 for i=1:numPlayers
@@ -108,10 +86,61 @@ for (i = 1:numPlayers)
     result = roundWinner(playerScore(i), dealerScore);
 end
 
+% hit/stand logic, use functions from below
+for i=1:numPlayers
+    disp(['Player(i). Name''s turn:])
+    hit = 1;
+    while hit == 1
+        choice = input('Hit or Stand? (1 = Hit, 0 = Stand): ');
+        if choice == 1
+            [players(i).HAND, myDeck] = dealCard(myDeck);
+            disp('You drew a card')
+        else
+            hit = 0;
+        end
+    end
+end
+
+% dealer logic
+disp('Dealer's turn')
+while handValue(dealer.HAND)<17
+    [dealer.HAND, myDeck] = dealCard(myDeck);
+    disp('Dealer hits')
+end
+disp('Dealer stands')
+
 disp(result)
+
+disp('Finished!')
+playAgain=input('Play again?(1=Yes),(0=No):');
+end
+
+disp('Thanks for playing Blackjack!')
 
 
 %% my local functions
+
+%% Game initialization
+function myDeck = initDeck()
+  suits = {'Diamonds', 'Hearts', 'Spades', 'Clubs'};
+  ranks = {'2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'};
+  index = 1;
+  for suitCard = 1:length(suits)
+      for rankCard = 1:length(ranks)
+          myDeck(index).suitCard = suits{suitCard};
+          myDeck(index).rankCard = ranks{rankCard};
+          if rankCard <= 9
+              myDeck(index).cardValue = rankCard + 1;
+          elseif rankCard <= 12
+              myDeck(index).cardValue = 10;
+          else
+              myDeck(index).cardValue = 11;
+          end
+          index = index + 1;
+      end
+  end
+end
+
 function shuffledDeck=shuffleDeck(myDeck)
 % use randperm to suffle deck, numbers 1:52
 %return shuffled Deck
