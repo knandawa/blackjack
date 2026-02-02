@@ -65,7 +65,7 @@ disp(['Dealer got: ' dealerCard.rankCard ' of ' dealerCard.suitCard])
 
 %% Main loop
 deck=shuffleDeck(myDeck);
-while(number of players>0 or players decide to end)
+% while(number of players>0 or players decide to end)
 
 % take initial bets
 
@@ -96,6 +96,20 @@ for i=1:numPlayers
   disp(['Player',num2str(i),'turn']);
 % logic check
   players(i)=play(players(i),deck,i==1);
+
+for (i = 1:numPlayers)
+    [players(i), myDeck] = playerTurn(players(i), myDeck);
+end
+[dealer, myDeck] = dealerTurn(dealer, myDeck);
+
+for (i = 1:numPlayers)
+    playerScore = calculateScore(playerHand);
+    playerScore = adjustScore(playerHand);
+    result = roundWinner(playerScore(i), dealerScore);
+end
+
+disp(result)
+
 
 %% my local functions
 function shuffledDeck=shuffleDeck(myDeck)
