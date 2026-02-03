@@ -1,0 +1,251 @@
+clear
+clc
+
+%% Blackjack Intro Words
+disp('Hello! Welcome to Blackjack')
+
+
+
+
+
+
+
+%% Game initialization
+
+myDeck = initDeck();
+myDeck = shuffleDeck(myDeck);
+
+numPlayers = input('How many players? ');
+for i = 1:numPlayers
+    players(i).NAME = input(['Enter name for Player ' num2str(i) ': '], 's');
+    players(i).HAND = myDeck([]);
+end
+
+
+dealer.NAME = 'Dealer';
+dealer.HAND = myDeck([]);
+
+
+for i = 1:numPlayers
+    [players(i), myDeck] = dealCard(players(i), myDeck);
+    [players(i), myDeck] = dealCard(players(i), myDeck);
+    disp([players(i).NAME ' got: '])
+    for j = 1:length(players(i).HAND)
+        disp([players(i).HAND(j).rankCard ' of ' players(i).HAND(j).suitCard])
+    end
+end
+
+
+[dealer, myDeck] = dealCard(dealer, myDeck);
+[dealer, myDeck] = dealCard(dealer, myDeck);
+
+disp('Dealer got: ')
+for j = 1:length(dealer.HAND)
+    disp([dealer.HAND(j).rankCard ' of ' dealer(1).HAND(j).suitCard])
+end
+
+
+
+
+
+%% Main loop
+
+for (i = 1:numPlayers)
+    [players(i), myDeck, playerScore] = playerTurn(players(i), myDeck);
+end
+
+[dealer, myDeck, dealerScore] = dealerTurn(dealer, myDeck);
+
+for (i = 1:numPlayers)
+    playerScore = calculateScore(players(i).HAND);
+    playerScore = adjustScore(players(i).HAND);
+    result = roundWinner(playerScore, dealerScore);
+    disp(result)
+
+end
+    
+
+ 
+
+
+
+
+
+% create loop for dealing cards
+% display information in command window, needs to be for players and dealer
+% runs once for each player and gives each player an empty hand-NO CARDS YET
+
+
+
+
+
+%% my local functions
+function myDeck = initDeck()
+  suits = {'Diamonds', 'Hearts', 'Spades', 'Clubs'};
+  ranks = {'2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'};
+  index = 1;
+  for suitCard = 1:length(suits)
+      for rankCard = 1:length(ranks)
+          myDeck(index).suitCard = suits{suitCard};
+          myDeck(index).rankCard = ranks{rankCard};
+          if rankCard <= 9
+              myDeck(index).cardValue = rankCard + 1;
+          elseif rankCard <= 12
+              myDeck(index).cardValue = 10;
+          else
+              myDeck(index).cardValue = 11;
+          end
+          index = index + 1;
+      end
+  end
+end
+
+
+function shuffleDeck = shuffleDeck(myDeck)
+  shuffleDeck = myDeck(randperm(length(myDeck)));
+end
+
+
+function [player, myDeck] = dealCard(player, myDeck)
+    player.HAND(end + 1) = myDeck(1);
+    myDeck(1) = [];
+end
+
+
+
+
+
+
+
+
+
+function [player, deck, playerScore] = playerTurn(player, deck)
+    playerScore = calculateScore(player.HAND);
+    playerScore = adjustScore(player.HAND);
+ 
+    while (playerScore < 21)
+
+        disp(['Player: ', player.NAME])
+        
+        disp('Your hand: ')
+        for i = 1:length(player.HAND)
+            disp([player.HAND(i).rankCard ' of ' player.HAND(i).suitCard])
+        end
+        
+        
+  
+
+        
+       choice = input('Do you want to (h)it or (s)tand? ','s');
+    
+
+        if choice == 'h'
+            [player, deck] = dealCard(player, deck);
+           
+            playerScore = calculateScore(player.HAND); % updates score
+            playerScore = adjustScore(player.HAND);
+            disp(['Your Score: ' num2str(playerScore)])
+        
+      
+            
+           
+        
+        % Checks for a bust
+            if playerScore > 21
+                disp('BUST! You went over 21.')
+                break
+            end
+        else
+            disp('Player stands.')
+            break
+        end
+    end 
+end
+
+
+function [dealer, deck, dealerScore] = dealerTurn(dealer, deck)
+    % This displays dealer information
+    disp('Dealer hand: ')
+    for i = 1:length(dealer.HAND)
+        disp([dealer.HAND(i).rankCard ' of ' dealer.HAND(i).suitCard])
+    end
+    
+
+    dealerScore = calculateScore(dealer.HAND);
+    dealerScore = adjustScore(dealer.HAND);
+    
+    disp(['Dealer score: ', num2str(dealerScore)])
+    
+    % If the dealer score is less than 17, takes one card
+    while dealerScore < 17
+        [dealer, deck] = dealCard(dealer, deck);     % adds card to dealer's hand
+        dealerScore = calculateScore(dealer.HAND); % updates score
+
+        dealerScore = adjustScore(dealer.HAND);
+        
+        disp('Dealer hits. New hand: ')
+        for i = 1:length(dealer.HAND)
+            disp([dealer.HAND(i).rankCard ' of ' dealer.HAND(i).suitCard])
+        end
+        disp(['Dealer new score: ', num2str(dealerScore)])
+       
+    end
+    
+    % This will check if dealer busted
+    if dealerScore > 21
+        disp('Dealer BUSTS!')
+    end
+end
+
+
+
+
+function bust = isBust(score)
+    bust = score > 21;
+end
+
+
+function score = calculateScore(hand)
+    cardValues = [hand.cardValue];
+    score = sum(cardValues);  % add up all cards
+end
+
+
+
+function adjustedScore = adjustScore(Hand)
+% function adjusts ace cards value and score
+
+    cardValues = [Hand.cardValue]; % gets an array of card values in players hand
+    score = calculateScore(Hand); % calculates players current score
+    
+    if (score > 21)
+        numAces = sum(cardValues == 11); % counts total number of ace cards in hand
+        while (score > 21 && numAces > 0)
+            score = score - 10; % adjusts ace card value to 1 instead of 11
+            numAces = numAces - 1;
+        end
+    else 
+        score = score;
+    end
+
+    adjustedScore = score; % updates players score with new score
+
+end 
+
+
+function result = roundWinner(playerScore, dealerScore)
+% determines round winner based on respective hand scores
+    if (playerScore > 21) & (dealerScore <= 21)
+        result = "Player Busts. Dealer wins.";
+    elseif (dealerScore > 21) & (playerScore <= 21)
+        result = "Dealer Busts. Player wins";
+    elseif (playerScore > dealerScore)
+        result = "Player Wins.";
+    elseif (dealerScore > playerScore)
+        result = "Dealer Wins.";
+    else
+        result = "Tie";
+    end
+
+end
+    
